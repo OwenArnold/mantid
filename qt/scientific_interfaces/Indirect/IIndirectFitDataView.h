@@ -43,6 +43,7 @@ public:
   virtual void setSampleFBSuffices(QStringList const &suffices) = 0;
   virtual void setResolutionWSSuffices(QStringList const &suffices) = 0;
   virtual void setResolutionFBSuffices(QStringList const &suffices) = 0;
+  virtual void clearAllSuffices() = 0;
 
   virtual void readSettings(QSettings const &settings) = 0;
   virtual UserInputValidator &validate(UserInputValidator &validator) = 0;
