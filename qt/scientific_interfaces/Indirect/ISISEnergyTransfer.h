@@ -69,9 +69,7 @@ private:
   void setInstrumentCheckBoxProperty(QCheckBox *checkbox,
                                      QMap<QString, QString> const &instDetails,
                                      QString const &instrumentProperty);
-
-  Ui::ISISEnergyTransfer m_uiForm;
-
+  void setFileExtensionsByName(bool filter) override;
   std::pair<std::string, std::string> createMapFile(
       const std::string
           &groupType); ///< create the mapping file with which to group results
@@ -90,6 +88,11 @@ private:
   void setSaveEnabled(bool enable);
   void setPlotIsPlotting(bool plotting);
   void setPlotTimeIsPlotting(bool plotting);
+
+  QStringList m_calibFBExtensions;
+  QStringList m_calibWSExtensions;
+
+  Ui::ISISEnergyTransfer m_uiForm;
 };
 } // namespace CustomInterfaces
 } // namespace MantidQt
