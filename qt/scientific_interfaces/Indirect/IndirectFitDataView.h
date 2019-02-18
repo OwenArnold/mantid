@@ -44,7 +44,6 @@ public:
   virtual void setSampleFBSuffices(const QStringList &suffices) override;
   virtual void setResolutionWSSuffices(const QStringList &suffices) override;
   virtual void setResolutionFBSuffices(const QStringList &suffices) override;
-  void clearAllSuffices() override;
 
   void readSettings(const QSettings &settings) override;
   UserInputValidator &validate(UserInputValidator &validator) override;

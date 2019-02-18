@@ -24,7 +24,7 @@ private:
   void setup() override;
   bool validate() override;
   void loadSettings(const QSettings &settings) override;
-  void filterDataBySuffices(bool filter) override;
+  void setFileExtensionsByName(bool filter) override;
   void setBrowserWorkspace() override{};
 
   bool isErrorsEnabled();
@@ -69,10 +69,15 @@ private slots:
   void plotTiled();
 
 private:
+  QStringList m_sampleFBExtensions;
+  QStringList m_sampleWSExtensions;
+  QStringList m_resolutionFBExtensions;
+  QStringList m_resolutionWSExtensions;
+  int m_maxTiledPlots = 17;
+
   Ui::Iqt m_uiForm;
   QtTreePropertyBrowser *m_iqtTree;
   bool m_iqtResFileType;
-  int m_maxTiledPlots = 17;
 };
 } // namespace IDA
 } // namespace CustomInterfaces

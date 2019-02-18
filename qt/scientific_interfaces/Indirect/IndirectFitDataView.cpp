@@ -97,11 +97,6 @@ void IndirectFitDataView::setResolutionFBSuffices(const QStringList &suffices) {
   m_dataForm->dsResolution->setFBSuffixes(suffices);
 }
 
-void IndirectFitDataView::clearAllSuffices() {
-  m_dataForm->dsSample->clearSuffices();
-  m_dataForm->dsResolution->clearSuffices();
-}
-
 UserInputValidator &
 IndirectFitDataView::validate(UserInputValidator &validator) {
   if (currentIndex() == 0)
