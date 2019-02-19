@@ -42,7 +42,9 @@ set ( SRC_FILES
 	IndirectMolDyn.cpp
 	IndirectMoments.cpp
 	IndirectSassena.cpp
-	IndirectSettingsDialog.cpp
+	IndirectSettingsModel.cpp
+	IndirectSettingsPresenter.cpp
+	IndirectSettingsView.cpp
 	IndirectSimulation.cpp
 	IndirectSimulationTab.cpp
 	IndirectSpectrumSelectionPresenter.cpp
@@ -121,7 +123,9 @@ set ( INC_FILES
 	IndirectMolDyn.h
 	IndirectMoments.h
 	IndirectSassena.h
-	IndirectSettingsDialog.h
+	IndirectSettingsModel.h
+	IndirectSettingsPresenter.h
+	IndirectSettingsView.h
 	IndirectSimulation.h
 	IndirectSimulationTab.h
 	IndirectSpectrumSelectionPresenter.h
@@ -189,7 +193,9 @@ set ( MOC_FILES
     IndirectMolDyn.h
     IndirectMoments.h
     IndirectSassena.h
-    IndirectSettingsDialog.h
+    IndirectSettingsModel.h
+    IndirectSettingsPresenter.h
+    IndirectSettingsView.h
     IndirectSimulation.h
     IndirectSimulationTab.h
     IndirectSpectrumSelectionPresenter.h
