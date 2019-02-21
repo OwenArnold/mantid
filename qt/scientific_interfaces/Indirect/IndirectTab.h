@@ -66,9 +66,11 @@ public:
 
   QStringList getAllowedExtensions() const;
 
+  /// Allows the user to turn the plotting of error bars off and on
+  void setPlotErrorBars(bool errorBars);
+
   /// Plot a spectrum plot of a given workspace
-  void plotSpectrum(const QString &workspaceName, const int &spectraIndex = 0,
-                    const bool &errorBars = false);
+  void plotSpectrum(const QString &workspaceName, const int &spectraIndex = 0);
 
 public slots:
   void runTab();
@@ -101,7 +103,7 @@ protected:
                            const std::vector<int> &workspaceIndices);
   /// Plot a spectrum plot with a given ws index
   void plotSpectrum(const QStringList &workspaceNames,
-                    const int &spectraIndex = 0, const bool &errorBars = false);
+                    const int &spectraIndex = 0);
 
   /// Plot a spectrum plot with a given spectra range
   void plotSpectrum(const QStringList &workspaceNames, int specStart,
@@ -116,6 +118,10 @@ protected:
   /// Plot a spectrum plot with a given set of spectra of a given workspace
   void plotSpectra(const QString &workspaceName,
                    const std::vector<int> &wsIndices);
+
+  /// Plot multiple spectra in a tiled plot
+  void plotTiled(std::string const &workspaceName, std::size_t const &fromIndex,
+                 std::size_t const &toIndex);
 
   /// Plot a time bin plot given a list of workspace names
   void plotTimeBin(const QStringList &workspaceNames, int binIndex = 0);
@@ -173,6 +179,9 @@ protected:
   bool checkADSForPlotSaveWorkspace(const std::string &workspaceName,
                                     const bool plotting,
                                     const bool warn = true);
+
+  /// Plot error bars when plotting a spectrum
+  bool m_plotErrorBars;
 
   /// Parent QWidget (if applicable)
   QWidget *m_parentWidget;
