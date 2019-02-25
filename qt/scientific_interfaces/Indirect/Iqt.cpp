@@ -166,11 +166,12 @@ namespace MantidQt {
 namespace CustomInterfaces {
 namespace IDA {
 Iqt::Iqt(QWidget *parent)
-    : IndirectDataAnalysisTab(parent), m_iqtTree(nullptr), m_iqtResFileType(),
+    : IndirectDataAnalysisTab(parent),
       m_sampleFBExtensions({"_red.nxs", "_sqw.nxs"}),
       m_sampleWSExtensions({"_red", "_sqw"}),
       m_resolutionFBExtensions({"_red.nxs", "_sqw.nxs", "_res.nxs"}),
-      m_resolutionWSExtensions({"_red", "_sqw", "_res"}) {
+      m_resolutionWSExtensions({"_red", "_sqw", "_res"}), m_iqtTree(nullptr),
+      m_iqtResFileType() {
   m_uiForm.setupUi(parent);
 }
 
