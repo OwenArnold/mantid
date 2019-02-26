@@ -180,9 +180,6 @@ protected:
                                     const bool plotting,
                                     const bool warn = true);
 
-  /// Plot error bars when plotting a spectrum
-  bool m_plotErrorBars;
-
   /// Parent QWidget (if applicable)
   QWidget *m_parentWidget;
 
@@ -208,6 +205,9 @@ protected:
 
   /// Use a Python runner for when we need the output of a script
   MantidQt::API::PythonRunner m_pythonRunner;
+
+  /// Plot error bars when plotting a spectrum
+  bool m_plotErrorBars;
 
   /// Validator for int inputs
   QIntValidator *m_valInt;
