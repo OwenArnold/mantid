@@ -42,7 +42,6 @@ namespace IDA {
 
 JumpFit::JumpFit(QWidget *parent)
     : IndirectFitAnalysisTab(new JumpFitModel, parent),
-      m_sampleFBExtensions({"_Result.nxs"}), m_sampleWSExtensions({"_Result"}),
       m_uiForm(new Ui::JumpFit) {
   m_uiForm->setupUi(parent);
 
@@ -62,9 +61,6 @@ void JumpFit::setupFitTab() {
   m_uiForm->svSpectrumView->hideSpectrumSelector();
   m_uiForm->svSpectrumView->hideMaskSpectrumSelector();
 
-  setSampleFBSuffices(m_sampleFBExtensions);
-  setSampleWSSuffices(m_sampleWSExtensions);
-
   addFunctions(getWidthFunctions());
   addFunctions(getEISFFunctions());
 
@@ -79,18 +75,6 @@ void JumpFit::setupFitTab() {
   connect(this, SIGNAL(updateAvailableFitTypes()), this,
           SLOT(updateAvailableFitTypes()));
 }
-
-QStringList JumpFit::getSampleFBSuffices() const {
-  return m_sampleFBExtensions;
-}
-
-QStringList JumpFit::getSampleWSSuffices() const {
-  return m_sampleWSExtensions;
-}
-
-QStringList JumpFit::getResolutionFBSuffices() const { return {}; }
-
-QStringList JumpFit::getResolutionWSSuffices() const { return {}; }
 
 void JumpFit::updateAvailableFitTypes() {
   auto const parameter = m_uiForm->cbParameterType->currentText().toStdString();

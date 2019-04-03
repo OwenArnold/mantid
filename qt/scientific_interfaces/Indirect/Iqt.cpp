@@ -166,12 +166,7 @@ namespace MantidQt {
 namespace CustomInterfaces {
 namespace IDA {
 Iqt::Iqt(QWidget *parent)
-    : IndirectDataAnalysisTab(parent),
-      m_sampleFBExtensions({"_red.nxs", "_sqw.nxs"}),
-      m_sampleWSExtensions({"_red", "_sqw"}),
-      m_resolutionFBExtensions({"_red.nxs", "_sqw.nxs", "_res.nxs"}),
-      m_resolutionWSExtensions({"_red", "_sqw", "_res"}), m_iqtTree(nullptr),
-      m_iqtResFileType() {
+    : IndirectDataAnalysisTab(parent), m_iqtTree(nullptr), m_iqtResFileType() {
   m_uiForm.setupUi(parent);
 }
 
@@ -245,8 +240,6 @@ void Iqt::setup() {
           SLOT(setTiledPlotFirstPlot(int)));
   connect(m_uiForm.spTiledPlotLast, SIGNAL(valueChanged(int)), this,
           SLOT(setTiledPlotLastPlot(int)));
-
-  setFileExtensionsByName(true);
 }
 
 void Iqt::run() {
@@ -529,12 +522,13 @@ void Iqt::loadSettings(const QSettings &settings) {
 
 void Iqt::setFileExtensionsByName(bool filter) {
   QStringList const noSuffixes{""};
-  m_uiForm.dsInput->setFBSuffixes(filter ? m_sampleFBExtensions
-                                         : getAllowedExtensions());
-  m_uiForm.dsInput->setWSSuffixes(filter ? m_sampleWSExtensions : noSuffixes);
-  m_uiForm.dsResolution->setFBSuffixes(filter ? m_resolutionFBExtensions
-                                              : getAllowedExtensions());
-  m_uiForm.dsResolution->setWSSuffixes(filter ? m_resolutionWSExtensions
+  m_uiForm.dsInput->setFBSuffixes(filter ? getSampleFBSuffixes("iqt")
+                                         : getExtensions("iqt"));
+  m_uiForm.dsInput->setWSSuffixes(filter ? getSampleWSSuffixes("iqt")
+                                         : noSuffixes);
+  m_uiForm.dsResolution->setFBSuffixes(filter ? getResolutionFBSuffixes("iqt")
+                                              : getExtensions("iqt"));
+  m_uiForm.dsResolution->setWSSuffixes(filter ? getResolutionWSSuffixes("iqt")
                                               : noSuffixes);
 }
 

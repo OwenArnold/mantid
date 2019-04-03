@@ -69,10 +69,6 @@ private slots:
   void plotTiled();
 
 private:
-  QStringList m_sampleFBExtensions;
-  QStringList m_sampleWSExtensions;
-  QStringList m_resolutionFBExtensions;
-  QStringList m_resolutionWSExtensions;
   int m_maxTiledPlots = 17;
 
   Ui::Iqt m_uiForm;
