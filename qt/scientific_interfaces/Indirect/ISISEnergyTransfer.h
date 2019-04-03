@@ -89,9 +89,6 @@ private:
   void setPlotIsPlotting(bool plotting);
   void setPlotTimeIsPlotting(bool plotting);
 
-  QStringList m_calibFBExtensions;
-  QStringList m_calibWSExtensions;
-
   Ui::ISISEnergyTransfer m_uiForm;
 };
 } // namespace CustomInterfaces
