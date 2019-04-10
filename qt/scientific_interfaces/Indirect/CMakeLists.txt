@@ -293,6 +293,7 @@ mtd_add_qt_library (TARGET_NAME MantidScientificInterfacesIndirect
     ${JSONCPP_LIBRARIES}
   QT4_LINK_LIBS
     Qwt5
+    Qt4::QtXml
   MTD_QT_LINK_LIBS
     MantidQtWidgetsCommon
     MantidQtWidgetsLegacyQwt
