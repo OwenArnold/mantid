@@ -513,7 +513,7 @@ def get_axes_labels(workspace):
     :param workspace: :class:`mantid.api.MatrixWorkspace` or :class:`mantid.api.IMDHistoWorkspace`
     """
     if isinstance(workspace, MultipleExperimentInfos):
-        axes = ['Intensity']
+        axes_labels = ['Intensity']
         dims = workspace.getNonIntegratedDimensions()
         for d in dims:
             axis_title = d.name.replace('DeltaE', r'$\Delta E$')
@@ -521,10 +521,14 @@ def get_axes_labels(workspace):
             axis_unit = axis_unit.replace('DeltaE', 'meV')
             axis_unit = axis_unit.replace('Angstrom', r'$\AA$')
             axis_unit = axis_unit.replace('MomentumTransfer', r'$\AA^{-1}$')
-            axes.append('{0} ({1})'.format(axis_title, axis_unit))
+            axes_labels.append('{0} ({1})'.format(axis_title, axis_unit))
     else:
-        '''For matrix workspaces, return a tuple of ``(YUnit, <other units>)``'''
-        axes = [workspace.YUnit()]  # TODO: deal with distribution
+        # For matrix workspaces, return a tuple of ``(YUnit, <other units>)``
+        y_unit_label = workspace.YUnitLabel()
+        if ' per ' in y_unit_label:
+            label, unit = y_unit_label.split(' per ')
+            y_unit_label = '{} (${}^{{-1}}$)'.format(label, unit)
+        axes_labels = [y_unit_label]
         for index in range(workspace.axes()):
             axis = workspace.getAxis(index)
             unit = axis.getUnit()
@@ -532,5 +536,5 @@ def get_axes_labels(workspace):
                 unit = '{} (${}$)'.format(unit.caption(), unit.symbol().latex())
             else:
                 unit = unit.caption()
-            axes.append(unit)
-    return tuple(axes)
+            axes_labels.append(unit)
+    return tuple(axes_labels)
