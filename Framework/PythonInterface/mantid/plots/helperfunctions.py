@@ -329,7 +329,7 @@ def get_matrix_2d_ragged(workspace, distribution, histogram2D=False):
         max_value = max(max_value, xtmp.max())
         diff = xtmp[1:] - xtmp[:-1]
         delta = min(delta, diff.min())
-    num_edges = int(numpy.ceil((max_value - min_value)/delta)) + 1 
+    num_edges = int(numpy.ceil((max_value - min_value)/delta)) + 1
     x_centers = numpy.linspace(min_value, max_value, num=num_edges)
     y = mantid.plots.helperfunctions.boundaries_from_points(workspace.getAxis(1).extractValues())
     z = numpy.empty([num_hist, num_edges], dtype=numpy.float64)
@@ -360,7 +360,7 @@ def get_matrix_2d_data(workspace, distribution, histogram2D=False):
     Returns x,y,z 2D arrays
     '''
     try:
-        _ = workspace.blocksize()
+        workspace.blocksize()
     except RuntimeError:
         raise ValueError('The spectra are not the same length. Try using pcolor, pcolorfast, or pcolormesh instead')
     x = workspace.extractX()
@@ -444,7 +444,7 @@ def get_data_uneven_flag(workspace, **kwargs):
     '''
     aligned = kwargs.pop('axisaligned', False)
     try:
-        _ = workspace.blocksize()
+        workspace.blocksize()
     except RuntimeError:
         aligned = True
     return aligned, kwargs
@@ -523,12 +523,8 @@ def get_axes_labels(workspace):
             axis_unit = axis_unit.replace('MomentumTransfer', r'$\AA^{-1}$')
             axes_labels.append('{0} ({1})'.format(axis_title, axis_unit))
     else:
-        # For matrix workspaces, return a tuple of ``(YUnit, <other units>)``
-        y_unit_label = workspace.YUnitLabel()
-        if ' per ' in y_unit_label:
-            label, unit = y_unit_label.split(' per ')
-            y_unit_label = '{} (${}$)$^{{-1}}$'.format(label, unit)
-        axes_labels = [y_unit_label]
+        # For matrix workspaces, return a tuple of ``(YUnit, <other units>)`
+        axes_labels = [workspace.YUnitLabel(useLatexText=True)]
         for index in range(workspace.axes()):
             axis = workspace.getAxis(index)
             unit = axis.getUnit()
