@@ -34,6 +34,14 @@ INCIDENT_MONITOR_TAG = '_incident_monitor'
 MANTID_PROCESSED_WORKSPACE_TAG = 'Mantid Processed Workspace'
 
 
+class BadProtonError(RuntimeError):
+    """A custom exception denoting an issue with proton charges while adding runs.
+    This error will be caught and handled in SANSadd2.
+    We are using a custom exception to ensure that we do not unintentionally catch
+    any non-proton charge related errors."""
+    pass
+
+
 def deprecated(obj):
     """
     Decorator to apply to functions or classes that we think are not being (or
@@ -1106,13 +1114,28 @@ class OverlayWorkspaces(object):
         time_1 = self._get_time_from_proton_charge_log(ws1)
         time_2 = self._get_time_from_proton_charge_log(ws2)
 
-        return float((time_1 - time_2) / np.timedelta64(1, 's'))
+        _a = float((time_1 - time_2) / np.timedelta64(1, 's'))
+        return _a
 
     def _get_time_from_proton_charge_log(self, ws):
         times = ws.getRun().getProperty("proton_charge").times
         if len(times) == 0:
             raise ValueError("The proton charge does not have any time entry")
-        return times[0]
+
+        # A bug in the software which created sample logs caused random, erroneous times of ~ -9e9 seconds
+        # in the proton charges (this gives a datetime in the 1700s)
+        # Failing to ignore these time can introduce subtle errors into added files
+        # These bugs have been fixed as of 04/19, so this check to account for erroneous data can be
+        # removed once old runs containing the bad data are no longer used
+        time = times[0]
+        if (time.astype('datetime64[Y]').astype(int) + 1970) < 1991:
+            # LoadEventNexus considers times after 1991 as "good"
+            raise BadProtonError("Entry 0 in the proton_charge sample logs has an "
+                                 "invalid pulse time of {}.".format(time))
+
+        # Bad times are sorted to the front. So either times[0] is bad or all
+        # times are good
+        return time
 
     def _get_workspace(self, workspace):
         if isinstance(workspace, MatrixWorkspace):

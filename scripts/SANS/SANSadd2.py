@@ -13,12 +13,10 @@ from shutil import copyfile
 
 from mantid.api import WorkspaceGroup
 from mantid.kernel import Logger
-from mantid.simpleapi import (CloneWorkspace, config, ConjoinWorkspaces, DeleteWorkspace, Load, LoadEventNexus, LoadNexus,
-                              LoadSampleDetailsFromRaw, mtd, Rebin, RenameWorkspace, SaveNexusProcessed,
-                              UnGroupWorkspace)
-from SANSUtility import (AddOperation, transfer_special_sample_logs,
-                         bundle_added_event_data_as_group, WorkspaceType,
-                         get_workspace_type, getFileAndName)
+from mantid.simpleapi import *
+from SANSUtility import (AddOperation, BadProtonError, bundle_added_event_data_as_group,
+                         get_workspace_type, getFileAndName,
+                         transfer_special_sample_logs, WorkspaceType)
 
 sanslog = Logger("SANS")
 _NO_INDIVIDUAL_PERIODS = -1
@@ -101,10 +99,13 @@ def add_runs(runs,  # noqa: C901
                         if workspaceName in mtd:
                             DeleteWorkspace(workspaceName)
                     return ""
-
-                adder.add(LHS_workspace=ADD_FILES_SUM_TEMPORARY, RHS_workspace=ADD_FILES_NEW_TEMPORARY,
-                          output_workspace=ADD_FILES_SUM_TEMPORARY, run_to_add=counter_run)
-
+                try:
+                    adder.add(LHS_workspace=ADD_FILES_SUM_TEMPORARY, RHS_workspace=ADD_FILES_NEW_TEMPORARY,
+                              output_workspace=ADD_FILES_SUM_TEMPORARY, run_to_add=counter_run)
+                except BadProtonError as e:
+                    sanslog.warning("{}\n{} has been omitted from the added file. Please edit the invalid "
+                                    "proton charge before re-including it.".format(str(e), userEntry))
+                    continue
                 if isFirstDataSetEvent:
                     adder.add(LHS_workspace=ADD_FILES_SUM_TEMPORARY_MONITORS,
                               RHS_workspace=ADD_FILES_NEW_TEMPORARY_MONITORS,

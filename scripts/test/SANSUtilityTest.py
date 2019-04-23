@@ -594,15 +594,64 @@ class TestOverlayWorkspaces(unittest.TestCase):
         self._clean_up(names)
         self._clean_up(out_ws_name)
 
+    def test_error_is_raised_if_first_proton_charge_is_bad(self):
+        name = 'ws1'
+        start_time = "1990-01-01T00:00:00"
+        event_ws = provide_event_ws_custom(name=name, start_time=start_time, extra_time_shift=0.0, proton_charge=True)
+
+        overlay_workspaces = su.OverlayWorkspaces()
+        try:
+            overlay_workspaces._get_time_from_proton_charge_log(event_ws)
+        except su.BadProtonError:
+            pass
+        else:
+            self.fail("We expect a BadProtonError to be raised because proton charge logs contain a time before 1991")
+
+        self._clean_up([name])
+
     def test_correct_time_difference_is_extracted(self):
-        pass
+        names = ['ws1', 'ws2']
+
+        start_time_1 = "2010-01-01T00:05:00"
+        event_ws_1 = provide_event_ws_custom(name=names[0], start_time=start_time_1,
+                                             extra_time_shift=0.0, proton_charge=True)
+
+        start_time_2 = "2010-01-01T00:00:00"
+        event_ws_2 = provide_event_ws_custom(name=names[1], start_time=start_time_2,
+                                             extra_time_shift=0.0, proton_charge=True)
+
+        overlay_workspaces = su.OverlayWorkspaces()
+        try:
+            actual_difference = overlay_workspaces._extract_time_difference_in_seconds(event_ws_1, event_ws_2)
+        except su.BadProtonError:
+            self.fail("We did not expect a BadProtonError to be raised as all proton charge "
+                      "log times are later than 1991.")
+        else:
+            self.assertEqual(actual_difference, 300.0, "Time difference between workspace proton charge logs was 300.0 "
+                                                       "seconds. We extracted a time of {} seconds "
+                                                       "instead.".format(actual_difference))
+
+        try:
+            negative_difference = overlay_workspaces._extract_time_difference_in_seconds(event_ws_2, event_ws_1)
+        except su.BadProtonError:
+            self.fail("We did not expect a BadProtonError to be raised as all proton charge "
+                      "log times are later than 1991.")
+        else:
+            self.assertEqual(negative_difference, -300.0, "Time difference between workspace proton charge logs "
+                                                          "was -300.0 seconds. We extracted a time of {} seconds "
+                                                          "instead.".format(negative_difference))
+
+        self._clean_up(names)
+
+
     def test_workspaces_are_normalized_by_proton_charge(self):
         pass
 
-    def _clean_up(self,names):
+    def _clean_up(self, names):
         for name in names:
             if name in mtd.getObjectNames():
                 DeleteWorkspace(name)
+
 
 class TestTimeShifter(unittest.TestCase):
     def test_zero_shift_when_out_of_range(self):
@@ -626,6 +675,7 @@ class TestTimeShifter(unittest.TestCase):
         self.assertEqual(time_shifter.get_Nth_time_shift(1), 0.0)
         self.assertEqual(time_shifter.get_Nth_time_shift(2), -232.0)
         self.assertEqual(time_shifter.get_Nth_time_shift(3), 0.0)
+
 
 class TestZeroErrorFreeWorkspace(unittest.TestCase):
     def _setup_workspace(self, name, type):
@@ -811,6 +861,7 @@ class TestRenameMonitorsForMultiPeriodEventData(unittest.TestCase):
             if element in mtd:
                 DeleteWorkspace(element)
 
+
 class TestConvertibleToInteger(unittest.TestCase):
     def test_converts_true_to_integer_when_integer(self):
         # Arrange
@@ -886,6 +937,7 @@ class TestValidXmlFileList(unittest.TestCase):
         # Assert
         self.assertFalse(result)
 
+
 class TestConvertToAndFromPythonStringList(unittest.TestCase):
     def test_converts_from_string_to_list(self):
         # Arrange
@@ -904,12 +956,14 @@ class TestConvertToAndFromPythonStringList(unittest.TestCase):
         expected = "test1.xml,test2.xml,test3.xml"
         self.assertEqual(expected, result)
 
+
 class HelperRescaleShift(object):
     def __init__(self, hasValues=True, min= 1, max= 2):
         super(HelperRescaleShift, self).__init__()
         self.qRangeUserSelected = hasValues
         self.qMin = min
         self.qMax = max
+
 
 class TestExtractionOfQRange(unittest.TestCase):
     def _delete_workspace(self, workspace_name):
@@ -1200,6 +1254,7 @@ class TestGetQResolutionForMergedWorkspaces(unittest.TestCase):
         DeleteWorkspace(front)
         DeleteWorkspace(rear)
         DeleteWorkspace(result)
+
 
 class TestDetectingValidUserFileExtensions(unittest.TestCase):
     def _do_test(self, file_name, expected):
